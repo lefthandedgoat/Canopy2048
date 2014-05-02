@@ -11,28 +11,17 @@ module program =
         match someElement ".game-message.game-over" with
         | None -> false
         | Some(_) -> true
-
-    let cell col row =
-        let heading = (element ".heading")
-        let container = (element ".tile-container")
-        let mergedCss = sprintf ".tile-position-%i-%i.tile-merged" col row                
-        match (someElementWithin mergedCss container) with
-        | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-        | None -> 
-            let newCss = sprintf ".tile-position-%i-%i.tile-new" col row
-            match (someElementWithin mergedCss container) with
-            | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-            | None -> 
-                let css = sprintf ".tile-position-%i-%i" col row
-                match (someElementWithin css container) with
-                | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-                | None -> None
-    
-    let state () =
-        [   for col in 1 .. 4 do
-                for row in 1 .. 4 do
-                    yield cell col row ]
-        |> List.choose id
+            
+    let state () = 
+        elements ".tile"
+        |> List.map(fun tile ->
+            let classes = tile.GetAttribute("class").Split([|' '|])
+            let pointClass = classes |> Array.find(fun classs -> classs.StartsWith("tile-"))
+            let point = pointClass.Split([|'-'|]).[1] |> System.Convert.ToInt32
+            let rowColumnClass = classes |> Array.find(fun classs -> classs.StartsWith("tile-position-"))
+            let column = rowColumnClass.Split([|'-'|]).[2] |> System.Convert.ToInt32
+            let row = rowColumnClass.Split([|'-'|]).[3] |> System.Convert.ToInt32
+            { Row = row; Col = column; Value = point })
 
     let moves = [| Up; Down; Left; Right; |]
     let rng = System.Random ()
