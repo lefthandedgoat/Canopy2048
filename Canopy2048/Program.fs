@@ -13,20 +13,10 @@ module program =
         | Some(_) -> true
 
     let cell col row =
-        let heading = (element ".heading")
-        let container = (element ".tile-container")
-        let mergedCss = sprintf ".tile-position-%i-%i.tile-merged" col row                
-        match (someElementWithin mergedCss container) with
+        let mergedCss = sprintf ".tile-container .tile-position-%i-%i.tile-merged, .tile-container .tile-position-%i-%i.tile-new, .tile-container .tile-position-%i-%i" col row col row col row
+        match (someElement mergedCss) with
         | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-        | None -> 
-            let newCss = sprintf ".tile-position-%i-%i.tile-new" col row
-            match (someElementWithin mergedCss container) with
-            | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-            | None -> 
-                let css = sprintf ".tile-position-%i-%i" col row
-                match (someElementWithin css container) with
-                | Some(x) -> Some { Col=col; Row=row; Value=int (x.Text) }
-                | None -> None
+        | None -> None
     
     let state () =
         [   for col in 1 .. 4 do
