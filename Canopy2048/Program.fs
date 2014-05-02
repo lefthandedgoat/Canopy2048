@@ -16,7 +16,7 @@ module program =
         elements ".tile"
         |> List.map(fun tile ->
             let classes = tile.GetAttribute("class").Split([|' '|])
-            let pointClass = classes |> Array.find(fun classs -> classs.StartsWith("tile-"))
+            let pointClass = classes |> Array.find(fun classs -> classs.StartsWith("tile-") && not (classs.StartsWith("tile-position-")))
             let point = pointClass.Split([|'-'|]).[1] |> System.Convert.ToInt32
             let rowColumnClass = classes |> Array.find(fun classs -> classs.StartsWith("tile-position-"))
             let column = rowColumnClass.Split([|'-'|]).[2] |> System.Convert.ToInt32
