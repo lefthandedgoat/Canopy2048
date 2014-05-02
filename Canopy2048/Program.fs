@@ -44,17 +44,24 @@ module program =
 
         start chrome
         url "http://gabrielecirulli.github.io/2048/"
-
+        
         let rec nextMove () =
+            let moves = [| Up; // Up; Up; Up; Up;
+                            Right; // Right; Right; Right; Right;
+                            Down; // Down; Down; Down; Down; 
+                            Left; // Left; Left; Left; Left;
+                        |]
+            moves
+            |> Array.iter (fun move -> 
+                if finished () then 
+                    ignore ()
+                else          
+                    play move)
+
             if finished () then 
                 printfn "Game over"
                 ignore ()
-            else          
-                printfn "Thinking"
-                state ()
-                |> GreedyBot.decide
-                |> showDecision
-                |> play
+            else
                 nextMove ()
 
         nextMove ()
